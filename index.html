@@ -4,39 +4,62 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MetaMask Network Adder</title>
+    <title>MetaMask Network Manager</title>
 </head>
 <body>
-    <h1>MetaMask Network Adder</h1>
-    <button id="addNetworkButton">Add Berachain Artio Network</button>
+<h1>MetaMask Network Manager</h1>
+<button id="addNetworkButton">Add Berachain Artio Network</button>
+<button id="switchNetworkButton">Switch to Berachain Artio Network</button>
 
-    <script>
-        const addNetworkButton = document.getElementById('addNetworkButton');
+<script>
+    const addNetworkButton = document.getElementById('addNetworkButton');
+    const switchNetworkButton = document.getElementById('switchNetworkButton');
 
-        addNetworkButton.addEventListener('click', async () => {
-            if (window.ethereum) {
-                try {
-                    await window.ethereum.request({
-                        method: 'wallet_addEthereumChain',
-                        params: [{
-                            chainId: '0x1385D', // 80085 in hexadecimal
-                            chainName: 'Berachain Artio',
-                            nativeCurrency: {
-                                name: 'BERA',
-                                symbol: 'BERA', // 2-6 characters long
-                                decimals: 18
-                            },
-                            rpcUrls: ['https://artio.rpc.berachain.com/'],
-                            blockExplorerUrls: ['https://artio.beratrail.io/']
-                        }]
-                    });
-                } catch (addError) {
-                    console.error('Error adding network:', addError);
-                }
-            } else {
-                alert('MetaMask is not installed. Please install it to use this feature.');
+    const berachainArtioData = {
+        chainId: '0x1385D', // 80085 in hexadecimal
+        chainName: 'Berachain Artio',
+        nativeCurrency: {
+            name: 'BERA',
+            symbol: 'BERA', // 2-6 characters long
+            decimals: 18
+        },
+        rpcUrls: ['https://artio.rpc.berachain.com/'],
+        blockExplorerUrls: ['https://artio.beratrail.io/']
+    };
+
+    addNetworkButton.addEventListener('click', async () => {
+        if (window.ethereum) {
+            try {
+                await window.ethereum.request({
+                    method: 'wallet_addEthereumChain',
+                    params: [berachainArtioData]
+                });
+            } catch (addError) {
+                console.error('Error adding network:', addError);
             }
-        });
-    </script>
+        } else {
+            alert('MetaMask is not installed. Please install it to use this feature.');
+        }
+    });
+
+    switchNetworkButton.addEventListener('click', async () => {
+        if (window.ethereum) {
+            try {
+                await window.ethereum.request({
+                    method: 'wallet_switchEthereumChain',
+                    params: [{ chainId: berachainArtioData.chainId }]
+                });
+            } catch (switchError) {
+                if (switchError.code === 4902) {
+                    alert('The network is not added to MetaMask. Please add it first.');
+                } else {
+                    console.error('Error switching network:', switchError);
+                }
+            }
+        } else {
+            alert('MetaMask is not installed. Please install it to use this feature.');
+        }
+    });
+</script>
 </body>
 </html>
