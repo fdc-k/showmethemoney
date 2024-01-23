@@ -1,0 +1,14 @@
+{
+  "name": "btc-ads",
+  "version": "1.0.0",
+  "description": "Your project description",
+  "main": "drip.js",
+  "scripts": {
+    "drip": "node drip.js"
+  },
+  "author": "K",
+  "license": "ISC",
+  "dependencies": {
+    "web3": "^4.3.0"
+  }
+}
